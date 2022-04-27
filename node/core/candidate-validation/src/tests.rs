@@ -33,7 +33,7 @@ fn correctly_checks_included_assumption() {
 
 	let persisted_validation_data_hash = validation_data.hash();
 	let relay_parent = [2; 32].into();
-	let para_id = 5.into();
+	let para_id: ParaId = 5.into();
 
 	let descriptor = make_valid_candidate_descriptor(
 		para_id,
@@ -105,7 +105,7 @@ fn correctly_checks_timed_out_assumption() {
 
 	let persisted_validation_data_hash = validation_data.hash();
 	let relay_parent = [2; 32].into();
-	let para_id = 5.into();
+	let para_id: ParaId = 5.into();
 
 	let descriptor = make_valid_candidate_descriptor(
 		para_id,
@@ -175,7 +175,7 @@ fn check_is_bad_request_if_no_validation_data() {
 	let validation_data: PersistedValidationData = Default::default();
 	let persisted_validation_data_hash = validation_data.hash();
 	let relay_parent = [2; 32].into();
-	let para_id = 5.into();
+	let para_id: ParaId = 5.into();
 
 	let descriptor = make_valid_candidate_descriptor(
 		para_id,
@@ -229,7 +229,7 @@ fn check_is_bad_request_if_no_validation_code() {
 	let validation_data: PersistedValidationData = Default::default();
 	let persisted_validation_data_hash = validation_data.hash();
 	let relay_parent = [2; 32].into();
-	let para_id = 5.into();
+	let para_id: ParaId = 5.into();
 
 	let descriptor = make_valid_candidate_descriptor(
 		para_id,
@@ -295,7 +295,7 @@ fn check_is_bad_request_if_no_validation_code() {
 fn check_does_not_match() {
 	let validation_data: PersistedValidationData = Default::default();
 	let relay_parent = [2; 32].into();
-	let para_id = 5.into();
+	let para_id: ParaId = 5.into();
 
 	let descriptor = make_valid_candidate_descriptor(
 		para_id,
