@@ -45,6 +45,7 @@ use polkadot_node_subsystem_util::{
 	rolling_session_window::{RollingSessionWindow, SessionWindowUpdate},
 };
 use polkadot_primitives::v2::{
+	Id as ParaId,
 	BlockNumber, CandidateEvent, CandidateHash, CandidateReceipt, ConsensusLog, CoreIndex,
 	GroupIndex, Hash, Header, SessionIndex,
 };
@@ -1208,8 +1209,8 @@ pub(crate) mod tests {
 			r
 		};
 		let candidates = vec![
-			(make_candidate(1.into()), CoreIndex(0), GroupIndex(0)),
-			(make_candidate(2.into()), CoreIndex(1), GroupIndex(1)),
+			(make_candidate(ParaId::from(1)), CoreIndex(0), GroupIndex(0)),
+			(make_candidate(ParaId::from(2)), CoreIndex(1), GroupIndex(1)),
 		];
 		let inclusion_events = candidates
 			.iter()
