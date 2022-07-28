@@ -124,7 +124,7 @@ async fn overseer_signal(
 ) {
 	delay!(50);
 	overseer
-		.send(FromOverseer::Signal(signal))
+		.send(FromOrchestra::Signal(signal))
 		.timeout(TIMEOUT)
 		.await
 		.expect("10ms is more than enough for sending signals.");
@@ -136,7 +136,7 @@ async fn overseer_send(
 ) {
 	gum::trace!(msg = ?msg, "sending message");
 	overseer
-		.send(FromOverseer::Communication { msg })
+		.send(FromOrchestra::Communication { msg })
 		.timeout(TIMEOUT)
 		.await
 		.expect("10ms is more than enough for sending messages.");
@@ -282,8 +282,8 @@ impl TestState {
 			// Receive a request for a chunk.
 			assert_matches!(
 				overseer_recv(virtual_overseer).await,
-				AllMessages::NetworkBridge(
-					NetworkBridgeMessage::SendRequests(
+				AllMessages::NetworkBridgeTx(
+					NetworkBridgeTxMessage::SendRequests(
 						requests,
 						IfDisconnected::ImmediateError,
 					)
@@ -331,8 +331,8 @@ impl TestState {
 			// Receive a request for a chunk.
 			assert_matches!(
 				overseer_recv(virtual_overseer).await,
-				AllMessages::NetworkBridge(
-					NetworkBridgeMessage::SendRequests(
+				AllMessages::NetworkBridgeTx(
+					NetworkBridgeTxMessage::SendRequests(
 						mut requests,
 						IfDisconnected::ImmediateError,
 					)

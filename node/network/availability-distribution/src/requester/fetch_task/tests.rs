@@ -227,9 +227,13 @@ impl TestRun {
 
 	/// Returns true, if after processing of the given message it would be OK for the stream to
 	/// end.
-	async fn handle_message(&self, msg: AllMessages) -> bool {
+	async fn handle_message(
+		&self,
+		msg: overseer::AvailabilityDistributionOutgoingMessages,
+	) -> bool {
+		let msg = AllMessages::from(msg);
 		match msg {
-			AllMessages::NetworkBridge(NetworkBridgeMessage::SendRequests(
+			AllMessages::NetworkBridgeTx(NetworkBridgeTxMessage::SendRequests(
 				reqs,
 				IfDisconnected::ImmediateError,
 			)) => {

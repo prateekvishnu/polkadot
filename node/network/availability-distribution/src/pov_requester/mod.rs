@@ -26,8 +26,8 @@ use polkadot_node_network_protocol::request_response::{
 use polkadot_node_primitives::PoV;
 use polkadot_node_subsystem::{
 	jaeger,
-	messages::{IfDisconnected, NetworkBridgeMessage},
-	SubsystemContext,
+	messages::{IfDisconnected, NetworkBridgeTxMessage},
+	overseer,
 };
 use polkadot_node_subsystem_util::runtime::RuntimeInfo;
 use polkadot_primitives::v2::{AuthorityDiscoveryId, CandidateHash, Hash, ValidatorIndex};
@@ -39,6 +39,7 @@ use crate::{
 };
 
 /// Start background worker for taking care of fetching the requested `PoV` from the network.
+#[overseer::contextbounds(AvailabilityDistribution, prefix = self::overseer)]
 pub async fn fetch_pov<Context>(
 	ctx: &mut Context,
 	runtime: &mut RuntimeInfo,
@@ -48,10 +49,7 @@ pub async fn fetch_pov<Context>(
 	pov_hash: Hash,
 	tx: oneshot::Sender<PoV>,
 	metrics: Metrics,
-) -> Result<()>
-where
-	Context: SubsystemContext,
-{
+) -> Result<()> {
 	let info = &runtime.get_session_info(ctx.sender(), parent).await?.session_info;
 	let authority_id = info
 		.discovery_keys
@@ -64,7 +62,7 @@ where
 	);
 	let full_req = Requests::PoVFetchingV1(req);
 
-	ctx.send_message(NetworkBridgeMessage::SendRequests(
+	ctx.send_message(NetworkBridgeTxMessage::SendRequests(
 		vec![full_req],
 		IfDisconnected::ImmediateError,
 	))
@@ -197,7 +195,10 @@ mod tests {
 					)) => {
 						tx.send(Ok(Some(make_session_info()))).unwrap();
 					},
-					AllMessages::NetworkBridge(NetworkBridgeMessage::SendRequests(mut reqs, _)) => {
+					AllMessages::NetworkBridgeTx(NetworkBridgeTxMessage::SendRequests(
+						mut reqs,
+						_,
+					)) => {
 						let req = assert_matches!(
 							reqs.pop(),
 							Some(Requests::PoVFetchingV1(outgoing)) => {outgoing}
